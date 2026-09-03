@@ -70,4 +70,18 @@ describe("Iceberg CatalogStore", () => {
     };
     await expect(store.getCurrentCommit(scope)).resolves.toEqual({ ok: true, value: second });
   });
+
+  it("fails unavailable on a branching or orphaned persisted history", async () => {
+    const client = new MemoryIcebergHistoryClient();
+    const store = new IcebergCatalogStore(client, scope);
+    await store.appendCommit(commit("commit-1"));
+    const snapshot = await client.readSnapshot(scope);
+    const marker = snapshot.rows.find((row) => row.rowKind === "commit");
+    expect(marker).toBeDefined();
+    if (!marker) return;
+    await client.appendSnapshot(scope, snapshot.snapshotId, [
+      { ...marker, commitId: "foreign-root", payloadJson: marker.payloadJson.replace("commit-1", "foreign-root") },
+    ]);
+    await expect(store.getCurrentCommit(scope)).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
+  });
 });
