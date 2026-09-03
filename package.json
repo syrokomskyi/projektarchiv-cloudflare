@@ -1,0 +1,40 @@
+{
+  "name": "@warpgogol/projektarchiv-cloudflare",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Cloudflare storage and coordination adapters for Projektarchiv.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./coordinator": {
+      "types": "./src/coordinator/index.ts",
+      "default": "./src/coordinator/index.ts"
+    }
+  },
+  "files": ["dist/", "src/index.ts", "src/coordinator/", "README.md"],
+  "scripts": {
+    "build": "pnpm exec tsc -p tsconfig.json",
+    "build:check": "pnpm exec tsc -p tsconfig.json --noEmit",
+    "check": "pnpm run build:check && pnpm run test",
+    "lint": "pnpm exec eslint \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": { "node": ">=24" },
+  "dependencies": {
+    "@warpgogol/projektarchiv-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "fast-check": "^4.9.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "publishConfig": { "access": "public" }
+}
