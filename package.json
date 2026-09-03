@@ -29,7 +29,8 @@
       "default": "./src/recovery/index.ts"
     },
     "./capture": { "types": "./src/capture/index.ts", "default": "./src/capture/index.ts" },
-    "./knowledge": { "types": "./src/knowledge/index.ts", "default": "./src/knowledge/index.ts" }
+    "./knowledge": { "types": "./src/knowledge/index.ts", "default": "./src/knowledge/index.ts" },
+    "./erasure": { "types": "./src/erasure/index.ts", "default": "./src/erasure/index.ts" }
   },
   "files": [
     "dist/",
@@ -40,6 +41,8 @@
     "src/recovery/",
     "src/capture/",
     "src/knowledge/",
+    "src/erasure/",
+    "src/erasure/",
     "README.md"
   ],
   "scripts": {
