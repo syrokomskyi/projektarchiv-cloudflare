@@ -19,6 +19,15 @@ describe("SqliteKnowledgeStore", () => {
     expect(second.ok && second.value[0]).toMatchObject({ factId: fact, revision: 2 }); sql.close();
   });
 
+  it("returns reservations with explicit fact keys even when durable ordering differs", async () => {
+    const sql = new NodeSqlStorage(); const store = new SqliteKnowledgeStore(sql, scope);
+    const result = await store.reserveFacts({ scope, operationId: "ordered", createdAt: now, facts: [
+      { factKey: "z.last", proposedFactId: factIdSchema.parse("01890f7e-7b2c-7a01-8a01-000000000902") },
+      { factKey: "a.first", proposedFactId: factIdSchema.parse("01890f7e-7b2c-7a01-8a01-000000000903") },
+    ] });
+    expect(result.ok && result.value.map((item) => item.factKey)).toEqual(["a.first", "z.last"]); sql.close();
+  });
+
   it("persists and completes an exact durable intent idempotently", async () => { // exact durable intent
     const sql = new NodeSqlStorage(); const store = new SqliteKnowledgeStore(sql, scope);
     const intent = knowledgeIntentSchema.parse({ schema: "projektarchiv.knowledge-intent@1", scope,
