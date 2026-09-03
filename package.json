@@ -30,7 +30,8 @@
     },
     "./capture": { "types": "./src/capture/index.ts", "default": "./src/capture/index.ts" },
     "./knowledge": { "types": "./src/knowledge/index.ts", "default": "./src/knowledge/index.ts" },
-    "./erasure": { "types": "./src/erasure/index.ts", "default": "./src/erasure/index.ts" }
+    "./erasure": { "types": "./src/erasure/index.ts", "default": "./src/erasure/index.ts" },
+    "./export": { "types": "./src/export/index.ts", "default": "./src/export/index.ts" }
   },
   "files": [
     "dist/",
@@ -42,7 +43,7 @@
     "src/capture/",
     "src/knowledge/",
     "src/erasure/",
-    "src/erasure/",
+    "src/export/",
     "README.md"
   ],
   "scripts": {

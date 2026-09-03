@@ -20,3 +20,4 @@ export * from "./recovery/index.ts";
 export * from "./capture/index.ts";
 export * from "./knowledge/index.ts";
 export * from "./erasure/index.ts";
+export * from "./export/index.ts";
