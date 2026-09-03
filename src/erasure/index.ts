@@ -5,3 +5,7 @@
 */
 export * from "./r2-erasure-store.ts";
 export * from "./sqlite-erasure-plan-store.ts";
+export * from "./catalog-payload-erasure-authority.ts";
+export * from "./search-projection-erasure-authority.ts";
+export * from "./cache-erasure-authority.ts";
+export * from "./provider-copy-erasure-authority.ts";
