@@ -27,7 +27,8 @@
     "./recovery": {
       "types": "./src/recovery/index.ts",
       "default": "./src/recovery/index.ts"
-    }
+    },
+    "./capture": { "types": "./src/capture/index.ts", "default": "./src/capture/index.ts" }
   },
   "files": [
     "dist/",
@@ -36,6 +37,7 @@
     "src/catalog-store/",
     "src/coordinator/",
     "src/recovery/",
+    "src/capture/",
     "README.md"
   ],
   "scripts": {
