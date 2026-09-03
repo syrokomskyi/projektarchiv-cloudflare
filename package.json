@@ -19,9 +19,20 @@
     "./artifact-store": {
       "types": "./src/artifact-store/index.ts",
       "default": "./src/artifact-store/index.ts"
+    },
+    "./catalog-store": {
+      "types": "./src/catalog-store/index.ts",
+      "default": "./src/catalog-store/index.ts"
     }
   },
-  "files": ["dist/", "src/index.ts", "src/artifact-store/", "src/coordinator/", "README.md"],
+  "files": [
+    "dist/",
+    "src/index.ts",
+    "src/artifact-store/",
+    "src/catalog-store/",
+    "src/coordinator/",
+    "README.md"
+  ],
   "scripts": {
     "build": "pnpm exec tsc -p tsconfig.json",
     "build:check": "pnpm exec tsc -p tsconfig.json --noEmit",
@@ -30,9 +41,12 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
-    "@warpgogol/projektarchiv-core": "workspace:*"
+    "@warpgogol/projektarchiv-core": "workspace:*",
+    "icebird": "0.8.27"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260903.1",
@@ -41,5 +55,7 @@
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
   },
-  "publishConfig": { "access": "public" }
+  "publishConfig": {
+    "access": "public"
+  }
 }
