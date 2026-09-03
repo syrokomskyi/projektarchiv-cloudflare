@@ -23,6 +23,10 @@
     "./catalog-store": {
       "types": "./src/catalog-store/index.ts",
       "default": "./src/catalog-store/index.ts"
+    },
+    "./recovery": {
+      "types": "./src/recovery/index.ts",
+      "default": "./src/recovery/index.ts"
     }
   },
   "files": [
@@ -31,6 +35,7 @@
     "src/artifact-store/",
     "src/catalog-store/",
     "src/coordinator/",
+    "src/recovery/",
     "README.md"
   ],
   "scripts": {
@@ -46,6 +51,7 @@
   },
   "dependencies": {
     "@warpgogol/projektarchiv-core": "workspace:*",
+    "@warpgogol/projektarchiv-operations": "workspace:*",
     "icebird": "0.8.27"
   },
   "devDependencies": {
