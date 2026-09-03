@@ -15,9 +15,13 @@
     "./coordinator": {
       "types": "./src/coordinator/index.ts",
       "default": "./src/coordinator/index.ts"
+    },
+    "./artifact-store": {
+      "types": "./src/artifact-store/index.ts",
+      "default": "./src/artifact-store/index.ts"
     }
   },
-  "files": ["dist/", "src/index.ts", "src/coordinator/", "README.md"],
+  "files": ["dist/", "src/index.ts", "src/artifact-store/", "src/coordinator/", "README.md"],
   "scripts": {
     "build": "pnpm exec tsc -p tsconfig.json",
     "build:check": "pnpm exec tsc -p tsconfig.json --noEmit",
@@ -31,6 +35,7 @@
     "@warpgogol/projektarchiv-core": "workspace:*"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260903.1",
     "@types/node": "^26.2.0",
     "fast-check": "^4.9.0",
     "typescript": "^6.0.3",

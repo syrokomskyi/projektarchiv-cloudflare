@@ -7,7 +7,9 @@
 </MODULE_CONTRACT>
 <CHANGE_SUMMARY>
   <item>RFC-1002: introduce the Cloudflare adapter package public surface.</item>
+  <item>RFC-1004: expose the scoped R2 ArtifactStore adapter.</item>
 </CHANGE_SUMMARY>
 */
 
+export * from "./artifact-store/index.ts";
 export * from "./coordinator/index.ts";
