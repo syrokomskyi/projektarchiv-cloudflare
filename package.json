@@ -28,7 +28,8 @@
       "types": "./src/recovery/index.ts",
       "default": "./src/recovery/index.ts"
     },
-    "./capture": { "types": "./src/capture/index.ts", "default": "./src/capture/index.ts" }
+    "./capture": { "types": "./src/capture/index.ts", "default": "./src/capture/index.ts" },
+    "./knowledge": { "types": "./src/knowledge/index.ts", "default": "./src/knowledge/index.ts" }
   },
   "files": [
     "dist/",
@@ -38,6 +39,7 @@
     "src/coordinator/",
     "src/recovery/",
     "src/capture/",
+    "src/knowledge/",
     "README.md"
   ],
   "scripts": {

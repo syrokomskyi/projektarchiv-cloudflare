@@ -18,3 +18,4 @@ export * from "./catalog-store/index.ts";
 export * from "./coordinator/index.ts";
 export * from "./recovery/index.ts";
 export * from "./capture/index.ts";
+export * from "./knowledge/index.ts";
