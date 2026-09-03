@@ -12,10 +12,7 @@ import type { KnowledgeResult } from "@warpgogol/projektarchiv-operations/knowle
 import { artifactObjectKey } from "../artifact-store/artifact-object-key.ts";
 
 export class R2ExportReader implements ExportArtifactReader {
-  constructor(
-    private readonly bucket: R2Bucket,
-    private readonly authoritativeScope: TenantScope,
-  ) {}
+  constructor(private readonly bucket: R2Bucket) {}
 
   async read(
     scope: TenantScope,
