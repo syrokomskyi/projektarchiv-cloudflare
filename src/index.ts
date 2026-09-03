@@ -1,6 +1,6 @@
 /*
 <MODULE_CONTRACT>
-<purpose>Export Cloudflare-specific Projektarchiv adapters through explicit provider-facing submodules.</purpose>
+<purpose>Export Cloudflare-specific Projektarchiv storage and coordination adapters through explicit provider-facing submodules.</purpose>
 <non-goals>
   <item>Do not own domain schemas, workflows, service bindings, or site composition.</item>
 </non-goals>
