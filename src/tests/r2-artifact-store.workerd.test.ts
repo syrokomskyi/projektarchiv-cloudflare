@@ -108,6 +108,11 @@ describe("R2 ArtifactStore in workerd", () => {
     if (quarantined.ok) {
       const object = await env.ARTIFACTS.get(quarantined.value);
       expect(object && new TextDecoder().decode(await object.bytes())).toBe("corrupt bytes");
+      expect(object?.customMetadata).toMatchObject({
+        "pa-quarantine-source": key,
+        "pa-quarantine-expected-sha256": expected.metadata.contentSha256,
+        "pa-quarantine-expected-byte-size": String(expected.metadata.byteSize),
+      });
     }
   });
 
@@ -121,5 +126,19 @@ describe("R2 ArtifactStore in workerd", () => {
     const second = await store.quarantine({ scope, objectKey: key, reason: "test incident" });
     expect(first).toEqual(second);
     expect(first).toMatchObject({ ok: true, value: { objectKey: `quarantine/${key}` } });
+  });
+
+  it("rejects a foreign object at an idempotent quarantine destination", async () => {
+    const store = new R2ArtifactStore(env.ARTIFACTS, scope);
+    const key = `artifacts/${artifactId}/6/original`;
+    const destination = quarantineObjectKey(scope, key);
+    expect(destination.ok).toBe(true);
+    if (!destination.ok) return;
+    await env.ARTIFACTS.put(destination.value, "foreign object");
+
+    await expect(store.quarantine({ scope, objectKey: key, reason: "test" })).resolves.toMatchObject({
+      ok: false,
+      code: "PA_UNAVAILABLE",
+    });
   });
 });

@@ -33,7 +33,12 @@ export async function digestArtifactBytes(bytes: Uint8Array): Promise<ArtifactDi
 
 export function encodeArtifactMetadata(
   metadata: ArtifactObjectMetadata,
-  quarantine?: { readonly reason: string; readonly sourceKey: string },
+  quarantine?: {
+    readonly reason: string;
+    readonly sourceKey: string;
+    readonly expectedContentSha256?: string;
+    readonly expectedByteSize?: number;
+  },
 ): Record<string, string> {
   return {
     "pa-contract": "projektarchiv.artifact-object@1",
@@ -44,9 +49,26 @@ export function encodeArtifactMetadata(
       ? {
           "pa-quarantine-reason": quarantine.reason,
           "pa-quarantine-source": quarantine.sourceKey,
+          ...(quarantine.expectedContentSha256
+            ? { "pa-quarantine-expected-sha256": quarantine.expectedContentSha256 }
+            : {}),
+          ...(quarantine.expectedByteSize === undefined
+            ? {}
+            : { "pa-quarantine-expected-byte-size": String(quarantine.expectedByteSize) }),
         }
       : {}),
   };
+}
+
+export function isQuarantineFor(
+  customMetadata: Record<string, string> | undefined,
+  sourceKey: string,
+): boolean {
+  return (
+    decodeArtifactMetadata(customMetadata) !== null &&
+    customMetadata?.["pa-quarantine-source"] === sourceKey &&
+    Boolean(customMetadata["pa-quarantine-reason"])
+  );
 }
 
 export function decodeArtifactMetadata(

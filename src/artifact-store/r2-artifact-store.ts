@@ -30,6 +30,7 @@ import {
   decodeArtifactMetadata,
   digestArtifactBytes,
   encodeArtifactMetadata,
+  isQuarantineFor,
 } from "./artifact-integrity.ts";
 
 type ArtifactFailureCode =
@@ -156,7 +157,12 @@ export class R2ArtifactStore implements ArtifactStore {
       httpMetadata: { contentType: metadata.mediaType },
       customMetadata: encodeArtifactMetadata(
         { ...metadata, contentSha256: digest.hex, byteSize: bytes.byteLength },
-        { reason, sourceKey: request.objectKey },
+        {
+          reason,
+          sourceKey: request.objectKey,
+          expectedContentSha256: metadata.contentSha256,
+          expectedByteSize: metadata.byteSize,
+        },
       ),
     });
     if (!created) {
@@ -181,8 +187,9 @@ export class R2ArtifactStore implements ArtifactStore {
     const destination = quarantineObjectKey(request.scope, request.objectKey);
     if (!destination.ok) return destination;
     const existing = await this.bucket.head(destination.value);
-    return existing
+    if (!existing) return failure("PA_NOT_FOUND", "artifact object not found");
+    return isQuarantineFor(existing.customMetadata, request.objectKey)
       ? success({ scope: request.scope, objectKey: quarantineRelativeKey(request.objectKey) })
-      : failure("PA_NOT_FOUND", "artifact object not found");
+      : failure("PA_UNAVAILABLE", "quarantine destination identity conflict");
   }
 }
