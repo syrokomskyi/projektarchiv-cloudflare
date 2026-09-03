@@ -9,10 +9,14 @@ import { describe, expect, it } from "vitest";
 import { SqliteProjectRevisionCoordinator } from "../coordinator/sqlite-project-revision-coordinator.ts";
 import {
   artifactId,
+  captureRunId,
   foreignScope,
   reservationId,
   scope,
+  sha256,
+  snapshotId,
   timestamp,
+  workspaceId,
 } from "../testing/fixtures.ts";
 import { NodeSqlStorage } from "../testing/node-sql-storage.ts";
 
@@ -94,6 +98,34 @@ describe("SqliteProjectRevisionCoordinator", () => {
       code: "PA_SCOPE_MISMATCH",
       detail: "tenantId, clientId, and projectId must match the authoritative ownership tuple",
     });
+    storage.close();
+  });
+
+  it("rejects skipped snapshot sequence and inconsistent previous identity", async () => {
+    const storage = new NodeSqlStorage();
+    const coordinator = new SqliteProjectRevisionCoordinator(storage, scope);
+    const snapshot = {
+      schema: "projektarchiv.workspace-snapshot@1" as const,
+      snapshotId: snapshotId(10),
+      ...scope,
+      workspaceId,
+      captureRunId,
+      sequence: 2,
+      capturedAt: timestamp,
+      status: "committed" as const,
+      counts: { total: 0, added: 0, modified: 0, deleted: 0, unchanged: 0 },
+      integritySha256: sha256,
+    };
+    await expect(
+      coordinator.publishSnapshot({ scope, expectedPreviousSnapshotId: null, snapshot }),
+    ).resolves.toMatchObject({ ok: false, code: "PA_REVISION_CONFLICT" });
+    await expect(
+      coordinator.publishSnapshot({
+        scope,
+        expectedPreviousSnapshotId: null,
+        snapshot: { ...snapshot, sequence: 1, previousSnapshotId: snapshotId(11) },
+      }),
+    ).resolves.toMatchObject({ ok: false, code: "PA_REVISION_CONFLICT" });
     storage.close();
   });
 });
