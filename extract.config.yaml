@@ -2,7 +2,6 @@ forgePlugin: false
 projectDir: packages/projektarchiv-cloudflare
 destName: projektarchiv-cloudflare
 standalone: true
-versionBump: patch
 
 workspacePrefixes:
   - "@warpgogol/"
