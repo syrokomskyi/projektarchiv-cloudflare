@@ -6,5 +6,6 @@ export default defineConfig({
     testTimeout: 30_000,
     include: ["src/**/*.test.ts"],
     exclude: ["src/**/*.workerd.test.ts"],
+    poolOptions: { forks: { maxWorkers: "50%" } },
   },
 });
