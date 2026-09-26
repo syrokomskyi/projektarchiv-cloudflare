@@ -12,9 +12,7 @@ it("exposes no asynchronous operation inside the transaction callback", () => {
     "utf8",
   );
   expect(source).not.toMatch(/transactionSync\s*\(\s*async\b/);
-  expect(source).not.toMatch(
-    /from\s+["'](?:cloudflare:workers|node:|@google|@aws-sdk|wrangler)/,
-  );
+  expect(source).not.toMatch(/from\s+["'](?:cloudflare:workers|node:|@google|@aws-sdk|wrangler)/);
   expect(source).not.toMatch(/\b(?:fetch|setTimeout|queueMicrotask)\s*\(/);
 
   type TransactionCallback = Parameters<SyncSqlStorage["transactionSync"]>[0];

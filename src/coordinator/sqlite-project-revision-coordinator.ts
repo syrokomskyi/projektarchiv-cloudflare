@@ -229,7 +229,10 @@ export class SqliteProjectRevisionCoordinator implements RevisionCoordinator {
         return failure("PA_REVISION_CONFLICT", "snapshot sequence is not the exact successor");
       }
       if (current && current.workspaceId !== request.snapshot.workspaceId) {
-        return failure("PA_REVISION_CONFLICT", "workspace identity cannot change in a snapshot chain");
+        return failure(
+          "PA_REVISION_CONFLICT",
+          "workspace identity cannot change in a snapshot chain",
+        );
       }
       const snapshot = workspaceSnapshotSchema.parse(request.snapshot);
       this.storage.exec(
@@ -256,9 +259,7 @@ export class SqliteProjectRevisionCoordinator implements RevisionCoordinator {
     if (!checked.ok) return checked;
     try {
       const row = this.currentSnapshotRow();
-      return success(
-        row ? workspaceSnapshotSchema.parse(JSON.parse(row.payload_json)) : null,
-      );
+      return success(row ? workspaceSnapshotSchema.parse(JSON.parse(row.payload_json)) : null);
     } catch {
       return failure("PA_UNAVAILABLE", "coordinator storage is unavailable");
     }

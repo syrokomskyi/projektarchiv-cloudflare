@@ -41,9 +41,7 @@ function validateArtifactRelativeKey(relativeKey: string): boolean {
   if (!/^[1-9]\d*$/u.test(segments[2])) return false;
   if (segments[3] === "original") return segments.length === 4;
   return (
-    segments[3] === "derived" &&
-    segments.length === 5 &&
-    safeDerivedName.test(segments[4] ?? "")
+    segments[3] === "derived" && segments.length === 5 && safeDerivedName.test(segments[4] ?? "")
   );
 }
 

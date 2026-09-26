@@ -71,10 +71,13 @@ function decodeRow(raw: Record<string, unknown>): IcebergHistoryRow {
   if (
     (rowKind !== "record" && rowKind !== "commit") ||
     typeof raw.commit_id !== "string" ||
-    (previousCommitId !== null && previousCommitId !== undefined && typeof previousCommitId !== "string") ||
+    (previousCommitId !== null &&
+      previousCommitId !== undefined &&
+      typeof previousCommitId !== "string") ||
     typeof raw.record_index !== "number" ||
     !Number.isInteger(raw.record_index) ||
-    (logicalTable !== null && logicalTable !== undefined &&
+    (logicalTable !== null &&
+      logicalTable !== undefined &&
       (typeof logicalTable !== "string" || !isProjektarchivLogicalTable(logicalTable))) ||
     typeof raw.schema_version !== "string" ||
     typeof raw.payload_json !== "string"
@@ -115,45 +118,74 @@ export class IcebirdHistoryClient implements IcebergHistoryClient {
         await restCatalogCreateNamespace(catalog, { namespace: this.namespace });
       } catch {
         const refreshed = await restCatalogListNamespaces(catalog);
-        if (!refreshed.some((entry) => entry.length === 1 && entry[0] === this.namespace)) throw new Error("catalog namespace unavailable");
+        if (!refreshed.some((entry) => entry.length === 1 && entry[0] === this.namespace))
+          throw new Error("catalog namespace unavailable");
       }
     }
     const name = await tableName(scope);
     const tables = await restCatalogListTables(catalog, { namespace: this.namespace });
     if (tables.some((entry) => entry.name === name)) return;
     try {
-      await icebergCreateTable({ catalog, namespace: this.namespace, table: name,
-        schema: historySchema, properties: { "projektarchiv.schema-version": "projektarchiv.catalog-history@1" } });
+      await icebergCreateTable({
+        catalog,
+        namespace: this.namespace,
+        table: name,
+        schema: historySchema,
+        properties: { "projektarchiv.schema-version": "projektarchiv.catalog-history@1" },
+      });
     } catch {
       const refreshed = await restCatalogListTables(catalog, { namespace: this.namespace });
-      if (!refreshed.some((entry) => entry.name === name)) throw new Error("catalog table unavailable");
+      if (!refreshed.some((entry) => entry.name === name))
+        throw new Error("catalog table unavailable");
     }
   }
 
   async readSnapshot(scope: TenantScope) {
     const catalog = await this.catalog();
-    const loaded = await restCatalogLoadTable(catalog, { namespace: this.namespace, table: await tableName(scope) });
-    const rows = await icebergRead({ tableUrl: loaded.metadata.location, metadata: loaded.metadata, resolver: this.resolver });
-    return { snapshotId: currentSnapshotId(loaded.metadata as unknown as Record<string, unknown>), rows: rows.map(decodeRow) };
+    const loaded = await restCatalogLoadTable(catalog, {
+      namespace: this.namespace,
+      table: await tableName(scope),
+    });
+    const rows = await icebergRead({
+      tableUrl: loaded.metadata.location,
+      metadata: loaded.metadata,
+      resolver: this.resolver,
+    });
+    return {
+      snapshotId: currentSnapshotId(loaded.metadata as unknown as Record<string, unknown>),
+      rows: rows.map(decodeRow),
+    };
   }
 
-  async appendSnapshot(scope: TenantScope, expectedSnapshotId: string | null, rows: readonly IcebergHistoryRow[]) {
+  async appendSnapshot(
+    scope: TenantScope,
+    expectedSnapshotId: string | null,
+    rows: readonly IcebergHistoryRow[],
+  ) {
     const catalog = await this.catalog();
     const name = await tableName(scope);
     const before = await restCatalogLoadTable(catalog, { namespace: this.namespace, table: name });
-    if (currentSnapshotId(before.metadata as unknown as Record<string, unknown>) !== expectedSnapshotId) {
+    if (
+      currentSnapshotId(before.metadata as unknown as Record<string, unknown>) !==
+      expectedSnapshotId
+    ) {
       throw new IcebergHistoryConflictError();
     }
     try {
       const metadata = await icebergTransaction(
         { catalog, namespace: this.namespace, table: name, resolver: this.resolver },
         async (transaction) => {
-          await transaction.append({ records: rows.map((row) => ({
-            row_kind: row.rowKind, commit_id: row.commitId,
-            previous_commit_id: row.previousCommitId, record_index: row.recordIndex,
-            logical_table: row.logicalTable, schema_version: row.schemaVersion,
-            payload_json: row.payloadJson,
-          })) });
+          await transaction.append({
+            records: rows.map((row) => ({
+              row_kind: row.rowKind,
+              commit_id: row.commitId,
+              previous_commit_id: row.previousCommitId,
+              record_index: row.recordIndex,
+              logical_table: row.logicalTable,
+              schema_version: row.schemaVersion,
+              payload_json: row.payloadJson,
+            })),
+          });
         },
       );
       const snapshotId = currentSnapshotId(metadata as unknown as Record<string, unknown>);
@@ -169,8 +201,12 @@ export class IcebirdHistoryClient implements IcebergHistoryClient {
     return restCatalogConnect({
       url: this.config.catalogUrl,
       warehouse: this.config.warehouse,
-      requestInit: { headers: { Authorization: `Bearer ${this.config.catalogToken}`,
-        "X-Iceberg-Access-Delegation": "vended-credentials" } },
+      requestInit: {
+        headers: {
+          Authorization: `Bearer ${this.config.catalogToken}`,
+          "X-Iceberg-Access-Delegation": "vended-credentials",
+        },
+      },
     });
   }
 }

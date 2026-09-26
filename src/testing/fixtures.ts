@@ -48,7 +48,5 @@ export function reservationId(index: number) {
 }
 
 export function snapshotId(index: number) {
-  return snapshotIdSchema.parse(
-    `01890f7e-7b2c-7a01-8a01-${String(200 + index).padStart(12, "0")}`,
-  );
+  return snapshotIdSchema.parse(`01890f7e-7b2c-7a01-8a01-${String(200 + index).padStart(12, "0")}`);
 }

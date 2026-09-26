@@ -13,7 +13,10 @@ function commit(commitId: string, previousCommitId: string | null = null): Catal
     previousCommitId,
     records: [
       { table: "projects", value: { schema: "projektarchiv.project@1", name: "Alpha" } },
-      { table: "archive_events", value: { schema: "projektarchiv.archive-event@1", type: "captured" } },
+      {
+        table: "archive_events",
+        value: { schema: "projektarchiv.archive-event@1", type: "captured" },
+      },
     ],
   };
 }
@@ -32,7 +35,10 @@ describe("Iceberg CatalogStore", () => {
       { rowKind: "commit", logicalTable: null, recordIndex: -1 },
     ]);
     await expect(store.getCurrentCommit(scope)).resolves.toEqual({ ok: true, value: first });
-    await expect(store.getCommit({ ...scope, commitId: first.commitId })).resolves.toEqual({ ok: true, value: first });
+    await expect(store.getCommit({ ...scope, commitId: first.commitId })).resolves.toEqual({
+      ok: true,
+      value: first,
+    });
   });
 
   it("proves unavailable is not empty and preserves the last committed snapshot", async () => {
@@ -41,8 +47,14 @@ describe("Iceberg CatalogStore", () => {
     const first = commit("commit-1");
     await store.appendCommit(first);
     client.unavailable = true;
-    await expect(store.getCurrentCommit(scope)).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
-    await expect(store.appendCommit(commit("commit-2", "commit-1"))).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
+    await expect(store.getCurrentCommit(scope)).resolves.toMatchObject({
+      ok: false,
+      code: "PA_UNAVAILABLE",
+    });
+    await expect(store.appendCommit(commit("commit-2", "commit-1"))).resolves.toMatchObject({
+      ok: false,
+      code: "PA_UNAVAILABLE",
+    });
     client.unavailable = false;
     await expect(store.getCurrentCommit(scope)).resolves.toEqual({ ok: true, value: first });
   });
@@ -50,9 +62,22 @@ describe("Iceberg CatalogStore", () => {
   it("fails closed for foreign scope, unknown logical table, and unversioned records", async () => {
     const client = new MemoryIcebergHistoryClient();
     const store = new IcebergCatalogStore(client, scope);
-    await expect(store.getCurrentCommit(foreignScope)).resolves.toMatchObject({ ok: false, code: "PA_SCOPE_MISMATCH" });
-    await expect(store.appendCommit({ ...commit("bad-table"), records: [{ table: "other", value: { schema: "projektarchiv.project@1" } }] })).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
-    await expect(store.appendCommit({ ...commit("bad-schema"), records: [{ table: "projects", value: { name: "missing" } }] })).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
+    await expect(store.getCurrentCommit(foreignScope)).resolves.toMatchObject({
+      ok: false,
+      code: "PA_SCOPE_MISMATCH",
+    });
+    await expect(
+      store.appendCommit({
+        ...commit("bad-table"),
+        records: [{ table: "other", value: { schema: "projektarchiv.project@1" } }],
+      }),
+    ).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
+    await expect(
+      store.appendCommit({
+        ...commit("bad-schema"),
+        records: [{ table: "projects", value: { name: "missing" } }],
+      }),
+    ).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
     expect(client.appendedBatches).toHaveLength(0);
   });
 
@@ -80,8 +105,15 @@ describe("Iceberg CatalogStore", () => {
     expect(marker).toBeDefined();
     if (!marker) return;
     await client.appendSnapshot(scope, snapshot.snapshotId, [
-      { ...marker, commitId: "foreign-root", payloadJson: marker.payloadJson.replace("commit-1", "foreign-root") },
+      {
+        ...marker,
+        commitId: "foreign-root",
+        payloadJson: marker.payloadJson.replace("commit-1", "foreign-root"),
+      },
     ]);
-    await expect(store.getCurrentCommit(scope)).resolves.toMatchObject({ ok: false, code: "PA_UNAVAILABLE" });
+    await expect(store.getCurrentCommit(scope)).resolves.toMatchObject({
+      ok: false,
+      code: "PA_UNAVAILABLE",
+    });
   });
 });

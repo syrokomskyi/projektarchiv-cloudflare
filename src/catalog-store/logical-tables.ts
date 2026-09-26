@@ -9,10 +9,24 @@
 import type { JsonObject } from "@warpgogol/projektarchiv-core";
 
 export const PROJEKTARCHIV_LOGICAL_TABLES = [
-  "tenants", "clients", "projects", "workspace_sources", "capture_runs",
-  "workspace_snapshots", "source_observations", "artifacts", "artifact_revisions",
-  "ingestion_runs", "facts", "fact_revisions", "confirmations", "inheritance_proposals",
-  "retention_dispositions", "legal_holds", "export_packages", "archive_events",
+  "tenants",
+  "clients",
+  "projects",
+  "workspace_sources",
+  "capture_runs",
+  "workspace_snapshots",
+  "source_observations",
+  "artifacts",
+  "artifact_revisions",
+  "ingestion_runs",
+  "facts",
+  "fact_revisions",
+  "confirmations",
+  "inheritance_proposals",
+  "retention_dispositions",
+  "legal_holds",
+  "export_packages",
+  "archive_events",
 ] as const;
 
 export type ProjektarchivLogicalTable = (typeof PROJEKTARCHIV_LOGICAL_TABLES)[number];

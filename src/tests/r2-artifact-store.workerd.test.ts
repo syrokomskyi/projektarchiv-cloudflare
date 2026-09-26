@@ -8,11 +8,7 @@ import {
   quarantineObjectKey,
   R2ArtifactStore,
 } from "@warpgogol/projektarchiv-cloudflare/artifact-store";
-import {
-  artifactIdSchema,
-  projectIdSchema,
-  type TenantScope,
-} from "@warpgogol/projektarchiv-core";
+import { artifactIdSchema, projectIdSchema, type TenantScope } from "@warpgogol/projektarchiv-core";
 
 const scope: TenantScope = {
   tenantId: "01890f7e-7b2c-7a01-8a01-000000000401",
@@ -57,15 +53,13 @@ describe("R2 ArtifactStore in workerd", () => {
     const key = `artifacts/${artifactId}/2/original`;
     const { bytes, metadata } = await fixture("racing revision");
     const results = await Promise.all(
-      Array.from({ length: 10 }, () =>
-        store.create({ scope, objectKey: key, ...metadata, bytes }),
-      ),
+      Array.from({ length: 10 }, () => store.create({ scope, objectKey: key, ...metadata, bytes })),
     );
 
     expect(results.filter((result) => result.ok)).toHaveLength(1);
-    expect(results.filter((result) => !result.ok && result.code === "PA_ALREADY_EXISTS")).toHaveLength(
-      9,
-    );
+    expect(
+      results.filter((result) => !result.ok && result.code === "PA_ALREADY_EXISTS"),
+    ).toHaveLength(9);
     const read = await store.read({ scope, objectKey: key });
     expect(read.ok && new TextDecoder().decode(read.value)).toBe("racing revision");
   });
@@ -136,7 +130,9 @@ describe("R2 ArtifactStore in workerd", () => {
     if (!destination.ok) return;
     await env.ARTIFACTS.put(destination.value, "foreign object");
 
-    await expect(store.quarantine({ scope, objectKey: key, reason: "test" })).resolves.toMatchObject({
+    await expect(
+      store.quarantine({ scope, objectKey: key, reason: "test" }),
+    ).resolves.toMatchObject({
       ok: false,
       code: "PA_UNAVAILABLE",
     });

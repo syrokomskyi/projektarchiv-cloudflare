@@ -34,10 +34,7 @@ import {
 } from "./artifact-integrity.ts";
 
 type ArtifactFailureCode =
-  | "PA_SCOPE_MISMATCH"
-  | "PA_ALREADY_EXISTS"
-  | "PA_NOT_FOUND"
-  | "PA_UNAVAILABLE";
+  "PA_SCOPE_MISMATCH" | "PA_ALREADY_EXISTS" | "PA_NOT_FOUND" | "PA_UNAVAILABLE";
 type ArtifactResult<Value> = DomainResult<Value, ArtifactFailureCode>;
 
 export class R2ArtifactStore implements ArtifactStore {
@@ -47,8 +44,7 @@ export class R2ArtifactStore implements ArtifactStore {
   ) {}
 
   async create(
-    request: ArtifactObjectRef &
-      ArtifactObjectMetadata & { readonly bytes: Uint8Array },
+    request: ArtifactObjectRef & ArtifactObjectMetadata & { readonly bytes: Uint8Array },
   ): Promise<ArtifactResult<ArtifactObjectMetadata>> {
     const checked = this.check(request.scope, request.objectKey);
     if (!checked.ok) return checked;
@@ -103,7 +99,10 @@ export class R2ArtifactStore implements ArtifactStore {
       const digest = await digestArtifactBytes(bytes);
       if (bytes.byteLength !== metadata.byteSize || digest.hex !== metadata.contentSha256) {
         await this.quarantineBytes(request, bytes, metadata, "read integrity mismatch");
-        return failure("PA_UNAVAILABLE", "artifact content integrity check failed and was quarantined");
+        return failure(
+          "PA_UNAVAILABLE",
+          "artifact content integrity check failed and was quarantined",
+        );
       }
       return success(bytes);
     } catch {
