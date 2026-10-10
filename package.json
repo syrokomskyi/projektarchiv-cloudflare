@@ -67,7 +67,7 @@
     "test:watch": "vitest"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24 <25"
   },
   "dependencies": {
     "@warpgogol/projektarchiv-core": "workspace:*",
@@ -77,8 +77,10 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260911.1",
     "@types/node": "^26.5.1",
+    "eslint": "^10.10.0",
     "fast-check": "^4.10.0",
     "typescript": "~5.9.3",
+    "typescript-eslint": "8.70.0",
     "vitest": "^5.0.0"
   },
   "publishConfig": {
