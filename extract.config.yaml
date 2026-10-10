@@ -10,6 +10,7 @@ stripScopes:
 preservePackages:
   - "@warpgogol/projektarchiv-cloudflare"
   - "@warpgogol/projektarchiv-core"
+  - "@warpgogol/projektarchiv-operations"
 packageManager: pnpm
 
 ci:
