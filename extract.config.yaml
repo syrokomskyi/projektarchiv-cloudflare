@@ -27,7 +27,6 @@ excludePathSegments:
   - .npmrc
   - pnpm-lock.yaml
   - tests
-  - testing
 
 postProcess:
   - action: delete
