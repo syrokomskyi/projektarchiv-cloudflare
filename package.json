@@ -75,8 +75,8 @@
     "node": ">=24 <25"
   },
   "dependencies": {
-    "@warpgogol/projektarchiv-core": "workspace:*",
-    "@warpgogol/projektarchiv-operations": "workspace:*",
+    "@warpgogol/projektarchiv-core": "^0.1.0",
+    "@warpgogol/projektarchiv-operations": "^0.1.0",
     "icebird": "0.8.28"
   },
   "devDependencies": {
@@ -90,5 +90,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "pnpm@11.10.0"
 }
