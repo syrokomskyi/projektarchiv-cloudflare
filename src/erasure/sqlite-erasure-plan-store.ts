@@ -55,7 +55,7 @@ export class SqliteErasurePlanStore implements ErasurePlanStore {
       return this.fail("PA_UNAVAILABLE", "erasure plan storage unavailable");
     }
   }
-  async get(scope: TenantScope, planId: string) {
+  async get(scope: TenantScope, planId: string): Promise<KnowledgeResult<ErasurePlan | null>> {
     const scoped = assertTenantScope(this.authoritativeScope, scope);
     if (!scoped.ok) return scoped;
     try {
